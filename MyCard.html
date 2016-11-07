@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Mycard</title>
+
+	<style>
+		.container{
+			margin: 0 auto;
+			width: 1000px;
+			height: 600px;
+			border:1px solid #CCC;
+			position: relative;
+		}
+		#game_div{
+			position:absolute;
+
+			margin-top: -500px;
+			margin-left: 34%;
+
+		}
+		.btn{
+				width: 150px;
+				height: 50px;
+				border-radius: 5%;
+				box-shadow: 3px 1px 5px 1px #000;
+				line-height: 50px;
+				text-align: center;
+				color:#FFF;
+				background-color: #00aeef;
+				position: absolute;	
+				top: 70%;
+				left: 42%;
+				opacity: 0;		
+		}
+	</style>
+	<script>
+		window.onload = function(){
+			var canvas = document.getElementById('canvas');
+			canvas.width = 1000;
+			canvas.height = 600;
+			var context = canvas.getContext('2d');
+			
+			moveClip(context);
+			
+
+		}
+		function drawWord(cxt){
+			cxt.save()
+			cxt.font = 'bold 100px 微软雅黑';
+			cxt.textAlign = 'center'
+			cxt.fillStyle = '#00aeef';
+
+			cxt.fillText('华南理工大学',500,200);
+			cxt.restore();
+
+			cxt.save()
+			cxt.font = ' 30px 微软雅黑';
+			cxt.textAlign = 'center';
+			cxt.fillStyle = '#00aeef';
+
+			cxt.fillText('前端工程师',500,290);
+			cxt.restore();
+
+			cxt.save()
+			cxt.font = 'bold 50px 微软雅黑';
+			cxt.textAlign = 'center'
+			cxt.fillStyle = '#00aeef';
+
+			cxt.fillText('王邸',500,370);
+			cxt.restore();
+		}
+
+		function cirClip(cxt,x,y,r){
+			cxt.beginPath();
+			
+			cxt.arc(x,y,r,0,2*Math.PI);
+			cxt.fillStyle = '#FFF';
+			cxt.fill();
+			cxt.clip();
+		}
+
+		function moveClip(cxt){
+			x = 400;
+			y = 400;				
+			var vx = 50;
+			var vy = 40;
+			var r  = 50;
+			var timer = setInterval(function(){
+				r += 10;
+				cxt.clearRect(0,0,800,800)
+				cxt.save();
+				//背景
+				cxt.beginPath();
+				cxt.fillStyle='black';
+				cxt.fillRect(0,0,canvas.width,canvas.height)
+				cirClip(cxt,x,y,r)
+				drawWord(cxt);
+				cxt.restore();//返回一开始的绘制的状态 防止clip 影响到之前的clip
+				if(r>=1000){
+					clearInterval(timer);
+					btnDisplay();
+				}
+
+				//碰撞判断
+				x += vx;
+				y += vy;
+				if(x>=canvas.width - 50){
+					vx = -vx ;
+					x = x+vx;
+
+				}if(x<=50){
+					vx = -vx;
+					x= x+vx
+				}if(y>=canvas.height-50){
+					vy = -vy;
+					y = y+vy;
+				}if(y<=50){
+					vy = -vy;
+					y = y+vy;
+				}
+
+
+			},100);
+		}
+
+		function btnDisplay(){
+			var btn = document.getElementsByClassName('btn')[0];
+			btn.style.opacity = 0;
+			var i = 1
+			var timer = setInterval(function(){
+				i=i+5;
+				btn.style.opacity = i/100;
+				if(i>=100){
+					clearInterval(timer);
+					btn.onclick = function(){
+						alert('你也可以的加油')
+					}
+				}
+			},100)
+		}
+	</script>
+</head>
+<body>
+	<div class="container">
+		<canvas id="canvas">
+			你的浏览器不支持canvas哦
+
+		</canvas>
+
+		<div class="btn">点击进入小游戏</div>
+	</div>
+	<div id="game_div"> 
+		
+	</div>  
+
+
+</body>
+</html>

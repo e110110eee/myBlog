@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>这是一首简单的小博客</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script>
+		window.onload = function(){
+			var canvas = document.getElementById('canvas');
+			canvas.width = 500;
+			canvas.height =600;
+			var context = canvas.getContext('2d');
+			context.save();
+			//head
+			context.beginPath();
+			context.arc(400,110,77,0,2*Math.PI);
+			context.fillStyle = '#000';
+			context.closePath();
+			context.fill();
+			context.stroke();
+			//body
+			context.beginPath();
+			context.moveTo(400,187);
+			context.lineTo(400,362);
+			context.lineWidth = 10;
+			context.closePath();
+			context.stroke();
+			context.closePath();
+			//lefthand
+			context.beginPath();
+			context.moveTo(400,255);
+			context.lineTo(346,255);
+			context.lineTo(286,175);
+			context.lineCap = 'round';
+			context.lineJoin = 'round';
+			context.stroke();
+			//righthand
+			context.beginPath();
+			context.moveTo(400,255);
+			context.lineTo(468,280);
+			context.lineTo(404,320);
+			context.lineTo(424,334);
+			context.stroke();
+			//leftfoot
+			context.beginPath();
+			context.lineTo(400,362);
+			context.lineTo(368,448);
+			context.lineTo(338,448);
+
+			context.stroke();
+			//rightfoot
+			context.beginPath();
+			context.lineTo(400,362);
+			context.lineTo(450,447);
+			context.lineTo(478,433);
+			context.stroke();
+			context.restore();
+			//say
+			context.textAlign="center";
+			context.font =" bold 20px 宋体"
+			context.fillText('加油，你也可以的:)',400,550)
+		
+			var demo_click = document.getElementsByClassName('demo_click')[0];
+			demo_click.onclick = function(){
+				var canvas = document.getElementsByClassName('canvas')[0];
+				var i =0;	
+					var timer =setInterval(function(){
+						i=i+5;
+						var j = i/100
+
+						canvas.style.opacity = j;
+						if(i>=100){
+							clearInterval(timer);
+						}
+					},80)
+			}
+		}
+
+	</script>
+</head>
+<body>
+	<div class="blog_page">
+		<header class="header">
+			<nav class="navBar">
+				<ul class="navBar_list blog_nav">
+					<li><img src="images/logo.png" alt="logo"></li>
+					<li class="list"><a href="index.html">Home</a></li>
+					<li class="list"><a href="#about">About</a></li>
+					<li class="list"><a href="#blog">Blog</a></li>
+					<li class="list"><a href="#contact">Contact</a></li>
+				</ul>
+			</nav>
+
+		</header>
+		<section class="blog_content">
+			<div class="leftArea">
+				<div class="introduce">
+					<h2 class="title">一周回忆录</h2>
+					<span class="author"> by <em>Dge</em> in <em>SCUT</em> | nov 6, <em>2016</em> | </span>
+
+					<div class="introduce_content">
+						<p class="paragraph">时间总是过得很快。这一周又过去，本周的主要的目的是回顾JS的DOM操作和JS的特性。所以主要是两个方面。闭包、DOM。最后是canvas画图的部分。感觉canvas动画和CSS操作节点有类似的地方，也有自己的特点。
+						</p>
+						<p class="paragraph">
+						<h3>一、闭包：</h3></p>
+						<span>function makeAdder(a) {</span>
+						    <span>&nbsp;&nbsp;return function(b) {</span>
+						        <span>&nbsp;&nbsp;&nbsp;&nbsp;return a + b;</span>
+						    <span>&nbsp;&nbsp;}</span>
+						<span>}</span>
+							<span>var x = makeAdder(5);</span>
+							<span>var y = makeAdder(20);</span>
+							<span>x(6); // ?</span>
+							<span>y(7); // ?</span>
+						<span>这里例子看起来就有点懵逼了吧？我也是这样觉得的。但是要理解了<a href="#" class="bold">作用域链</a>就好理解很多。我们先来看一下另一个例子：</span>
+						<span>function betterExampleNeeded() {</span>
+						    <span>var a = 1;</span>
+						    <span>&nbsp;&nbsp;function oneMoreThanA() {</span>
+						        <span>&nbsp;&nbsp;&nbsp;&nbsp;return a + 1;</span>
+						    <span>&nbsp;&nbsp;}</span>
+						    <span>return oneMoreThanA();</span>
+						<span>}</span>
+						这是一个内部函数的例子。也就是函数里面嵌套函数。他们也有相同的地方。就是他们都有内层函数。可以调用外层的局部变量。
+						最重要的不同点就是内部函数的外层的函数return了。但是闭包只有内层函数return.。函数返回就要使局部变量不存在了，也就是闭包传进来的参数a。但是这样内层函数就不能发挥作用了。局部变量a还是存在的。所以在之前的例子这里a有两个不同的副本，（我很喜欢这个词，表示不是他和她一样的东西）然后输出的就是5+6=11 &nbsp;&nbsp;&nbsp;&nbsp;	10+6=16;
+						
+
+						</p>
+						<p class="paragraph">
+							当JS执行一个函数的时候，就好像我要在一个地方建房子，首先你要有一块地来建房子吧。这里就是函数的<a href="#" class="bold">作用域</a>。房子自己有一个属性a,可以用来住人，这个属性就代表一个<a href="#" class="bold">参数</a>传递进函数。然后makeAdder 返回一个新的函数。（在房子里面再建一个床睡觉）。这时候JS的<a href="#" class="bold">垃圾回收器</a>要回收makeAdder创建函数的作用域，也就是房地产商想过来拆房子。<a href="#" class="bolder">但是返回的内层的函数保留一个指向makeAdder的作用域对象的引用。（在别的地方叫做指针）</a>。结果就不会被垃圾回收器回收。直到指向makeAdder作用域对象调用结束。这个床又是有机关的。房地产也搞不定。只有这个床自己坏了，才能把房子拆了。。。这里的内层函数指向外层作用域对象就是一个<a href="" class="bold">作用域链</a>，内层函数还可以继续return….. 闭包允许你保存状态——所以它们通常可以代替对象来使用（当你不想再单独创建变量重复操作的时候）
+							当然闭包有好的和不好的地方。内存泄漏是最常见的现象。当浏览器不清楚函数的周期的时候就会有毛病。就好像这栋楼不拆会影响整个一片地区的房子完成进度。IE浏览器又是比较娇贵的那种。只要一循环引用就炸了。 什么是循环引用：看下面的例子：
+							<span>function leakMemory() {</span>
+							    <span>&nbsp;&nbsp;&nbsp;&nbsp;var el = document.getElementById('el');</span>
+							    <span>&nbsp;&nbsp;&nbsp;&nbsp;var o = { 'el': el };</span>
+							    <span>&nbsp;&nbsp;&nbsp;&nbsp;el.o = o;</span>
+							<span>}</span>
+							在 IE 中，每当在一个 JavaScript 对象和一个本地对象之间形成循环引用时，就会发生内存泄露。
+							循环引用是很常见的。但是我们最好回避他：
+							<span>1）	最简单方法就是不要使用el:</span>
+							<span>function addHandler(){</span>
+							<span>&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(‘el’).onclick = function(){</span>
+								<span>&nbsp;&nbsp;&nbsp;&nbsp;this.style.background = ‘red’</span>
+							<span>&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+							<span>}</span>
+
+							<span>2)使用另一个闭包</span>
+
+							<span>function addHandler() {</span>
+								<span>&nbsp;&nbsp;&nbsp;&nbsp;var clickHandler = function() {</span>
+							     <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.style.backgroundColor = 'red';</span>
+							<span>&nbsp;&nbsp;&nbsp;&nbsp;};</span>
+							    <span>&nbsp;&nbsp;return(function() {</span>
+							        <span>&nbsp;&nbsp;&nbsp;&nbsp;var el = document.getElementById('el');</span>
+							        <span>&nbsp;&nbsp;&nbsp;&nbsp;el.onclick = clickHandler;</span>
+							    <span>&nbsp;&nbsp;})();</span>
+							<span>}</span>
+						</p>
+						<p class="paragraph">
+							从新阅读了闭包发现我有个地方理解有一小小问题。就是内部的函数创造由两部分组成的。一个是函数，以及创造该函数的作用域（上一级函数）的局部变量作为他的环境。也就是他可以得到的参数。还是之前的例子，我们是在madeAdder（a）函数得到了局部变量a，也就是建造房子自带的属性。自带的可以避风的属性（a），给我们一个环境去铺一张床睡觉！
+							<span>参考: <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures" class="bold" target="block">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures</a></span>
+						</p>
+						<div class="hr_15"></div>
+						<h3>二、DOM----节点的控制：</h3>
+						<p class="paragraph">
+							这一部分是比较基础的内容，但是坑也不少了。
+						</p>
+						
+						<p class="paragraph">
+							关于DOM操作遇到的坑总结一下：
+							<span>1.	空节点:在遍历子节点时候要注意；</span>
+							<span>2.tr的上一级并不是table上一级的上一级才是。上一级是tbody</span>
+							<span>3.	注意哪些取DOM的返回的是数组，getElementsByClassName()、getElementsByTagName()、childNodes。</span>
+							<span>4.	给需要的DOM添加事件的时候，注意不能直接在for循环里面添加。只会触发最后一次循环的事件的结果。处理方法可以用(1)立即调用函数 。(2)在for循环里面只放一个带参数的函数。函数单独写在外面。</span>
+
+						</p>
+						<div class="hr_15"></div>
+						<h3>三、Canvas：创造一个奇迹</h3>
+						<p class="paragraph">
+							canvas 这个是H5的重头戏，当然我们也不可能一下就全部掌握它。但是这确实可以和JS实现一些比较厉害的东西。我们接下来来看看吧
+						</p>
+						<p class="paragraph">
+							在编程遇到不懂得名词的时候，第一步我就先去找翻译。canvas 百度翻译出来的就是画布，帆布的意思，也就是我们要在上面画图咯。先别着急，文档上写了画图需要一个上下文环境；而且我们还没有确定画布大小怎么画？
+						</p>
+						<p class="paragraph">
+							<span>var canvas = document.getElementById(‘canvas’);//先拿到DOM</span>
+							<span>canvas.width = xxx</span>
+							<span>canvas.height = xxx </span>
+							<span>注意:canvas的数字是不带单位的，所以默认是像素单位（符合大众口味）</span>
+
+							<span>然后获取我们的上下文环境：</span>
+							<span>var context = canvas.getContext(‘2d’);</span>
+
+							<span>好了接下来我们就可以画图了。在画图之前我要说三点：</span>
+							<span class="bold">canvas 是基于状态来绘图的！</span>
+							<span class="bold">canvas 是基于状态来绘图的！</span>
+							<span class="bold">canvas 是基于状态来绘图的！</span>
+							<span>这是真的，这不是梦。  也就是说不是按画的一个一个对象去控制的。而是按照你的状态进行绘图。简单说就是你画到哪里，就到哪里绘制。感觉就像艺术家有点浪啊。</span>
+							<span>什么叫基于状态绘图?</span>
+							<span>我们先来学习一些基础知识再来讨论这个问题。
+							首先我们有canvas了是不是我们需要一只称手的笔来作画了？我们知道画图其实就是在画两个东西：线条和区域。当然区域是线条组成的。我们先来看看线条吧：有几个要掌握的属性
+
+							<span>context.moveTo(x,y)  路径的开始点</span>
+							<span>context.lineTo(x,y)	   路径的结束点</span>
+
+							<span>这里出现了路径：就是我们要画的一个路线图，还没有开始绘制 。当然我们绘制之前还要设计一些样式吧（就好像CSS对HTML一样）</span>
+							<span>context.strokeStyle= “”;</span>
+							<span>context.stroke()   把路径 绘制成线</span>
+							看下面一个例子：
+							<img src="images/1.png" alt="" class="ex_img">
+							<span>这三条线的颜色是红、绿、蓝吗？ 答案当然不是；
+							三条线颜色是一样的。这就是基于状态的绘图。 并不是把线条看成对象。绘制完一个到一个。但是我们难道就不能把他们仨的颜色弄成不同的吗? 万能的人类当然给我们设置其他方法，还记得我之前说了一个词吗路径 Path ,这在canvas里是非常常见的。就是把不同的绘制的对象用beginPath() closePath()包裹起来，就能组成了不同的绘制的路径。</span>
+						</p>
+						<p class="paragraph">
+							好的线段我们讲完了，接下来我们说一说区域的的填充。当我们路径围成区域之后
+							<span>context.fillStyle() 设置填充的样式；</span>
+							<span>context.fill()  进行填充和stroke()异曲同工之妙。</span> 
+							<span class="bold demo_click">下面演示一個小demo吧</span>
+						</p>
+						<p class="paragraph">
+							社会在不断进步，如果每一条线都是这样画岂不是被累死了？当然大哥发明了几个很方便的API
+							<span>cxt.rect(x,y,width,height )  规划路径；</span>
+							 
+							<span>cxt.fillRect(x,y,width,height) 规划路径填充颜色 </span>
+							<span>cxt.strokeRect(x,y,width,height) 规划路径然后描绘线</span>
+
+						</p>
+						<p class="paragraph">
+							之前画的是直线，现在我们来介绍四个画曲线API。
+							<span>context.arc(x0,y0,R,startAngle,endAngle, anticlockwise=false(顺时针 default))  </span>
+							<span>context.arcTo(x1,y1,x2,y2,radius);</span><span>需要提前给一个控制点x0,y0</span>
+
+							<img src="images/2.png" alt="">
+							<span>图像开始画一定是在X0，Y0，但是结束点不一定是 X2，Y2</span>
+							<span>context. bezierCurveTo(x1,y1,x2,y2,x3,y3) 二次/三次贝赛尔曲线  </span>
+							<span>可以试试这个<a href="http://www.j--d.com/bezier" class="bold" target="block">http://www.j--d.combezier</a>//画曲线基本靠他了</span>
+						</p>
+						<p class="paragraph">
+							基本上绘图所用的API都在这里了，还有很多关于fillStyle 和 strokeStyle的介绍，在具体绘制时候可以具体使用。一些图形变换的API和CSS3的类似。不过CSS3的表现力更加丰富一些。关于文字的绘制也比较简单这里不再赘述了，说一些比较常用的API。
+
+							<span>1.save() /restore()</span> 
+							 大家之前有看到路径可以包裹起来的对吧。当然我们的状态也可以包裹的。这里我没有提及到动画相关内容。如果不把状态包裹起来，我们设置动画是对整个canvas操作的。该动的没动，不该动的动了。restore() 目的就是返回到我们开始改变状态save()之前。这确实很好用的属性；
+							<span>2.clip()</span>
+							context.clip() 把刚才绘制的路径设置为当前的绘制的环境。也就是画布的区域；
+							这里放一个简单的<a href="MyCard.html" class="bold" target="block">demo</a>感受一下clip 炫酷的效果。
+
+						</p>
+						<p>	
+							总结：canvas是一个非常大的话题。还有很多东西都没有兼容所有浏览器。但是不久将来我们将会看到很多炫酷网页都是H5和CSS3制作的。加油吧！
+
+						</p>
+					</div>
+
+				</div>
+
+			</div>
+			<div class="rightArea">
+				<div class="right_nav">
+					<div class="search">
+						<input type="text" class="search_input">
+					</div>
+					<div class="recent">
+						<h2 class="recent_h2">recent</h2>
+						<ul class="recent_blog">
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+						</ul>
+					</div>
+					<div class="canvas">
+						<canvas id="canvas">
+							
+						</canvas>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</body>
+</html>

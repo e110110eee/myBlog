@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>这是一首简单的小博客</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+	<div class="blog_page">
+		<header class="header">
+			<nav class="navBar">
+				<ul class="navBar_list blog_nav">
+					<li><img src="images/logo.png" alt="logo"></li>
+					<li class="list"><a href="index.html">Home</a></li>
+					<li class="list"><a href="#about">About</a></li>
+					<li class="list"><a href="#blog">Blog</a></li>
+					<li class="list"><a href="#contact">Contact</a></li>
+				</ul>
+			</nav>
+
+		</header>
+		<section class="blog_content">
+			<div class="leftArea">
+				<div class="introduce">
+					<h2 class="title">CSS3动画技巧</h2>
+					<span class="author"> by <em>Dge</em> in <em>SCUT</em> | oct 31, <em>2016</em> | </span>
+					<img src="http://d.hiphotos.baidu.com/baike/c0%3Dbaike72%2C5%2C5%2C72%2C24/sign=c1bd269965d0f703f2bf9d8e69933a58/95eef01f3a292df5ab50dc9bbb315c6035a873a8.jpg" alt="">
+					<div class="introduce_content">
+						<p class="paragraph">今天只完成第一部分：就是属性的部分。发现还有很多CSS3的属性还没有兼容主流的浏览器。所以很多的属性我都是一扫而过。但是常用的三个动画的属性我将会重点的学习。(动画、过度、变换)
+						</p>
+						<p class="paragraph">
+						<em class="bold">变换transform</em>（注意：只是变换效果并没有过度,主要有五个属性值主要是五个：<em class="attribute">translate</em>:对象的平移;<em class="attribute">rotate</em>:旋转;<em class="attribute">scale</em>:缩放;<em class="attribute">skew</em>:扭曲;<em class="attribute">matrix</em>:矩阵（大神一般都用这个）
+
+						<span>translate:(X,Y) X,Y轴</span>
+						<span>rotate:首先要设置圆心：transform-orgin默认 center,center然后再写角度（15deg）</span>
+						<span>scale(X,Y)同translate但是这里设置的是倍数关系的数字</span>
+						<span>skew:设置的也是角度deg()</span>
+						<span>martrix: 以一个含六值的(a,b,c,d,e,f)变换矩阵的形式指定一个2D变换，相当于直接应用一个[a,b,c,d,e,f]变换矩阵<a href="demo1.html">实例请看这里</a></span>
+						</p>
+
+						<p class="paragraph"><em class="bold">过渡transition</em>主要也就几个属性:首先你想我要过度的哪个属性<em class="attribute">transition-property</em>肯定要有的吧。然后你要想怎么控制。既然transform已经给了路程。那我们就需要时间和速度了吧。时间是<em class="attribute">transition-duration:</em>   速度换一种说法就是过度的方式：<em class="attribute">transition-timing-function: </em>再加个五毛特效就Ok了，<em class="attribute">transition-delay</em>。
+						
+						<span>transition-property: 你要设置的属性 还可以是all</span>
+						<span>transition-duration:数字啦</span>
+						<span>transition-timming-function:这个有点6需要写出来
+							linear：线性过渡。等同于贝塞尔曲线(0.0, 0.0, 1.0, 1.0)
+							ease：平滑过渡。等同于贝塞尔曲线(0.25, 0.1, 0.25, 1.0)
+							ease-in：由慢到快。等同于贝塞尔曲线(0.42, 0, 1.0, 1.0)
+							ease-out：由快到慢。等同于贝塞尔曲线(0, 0, 0.58, 1.0)
+							ease-in-out：由慢到快再到慢。等同于贝塞尔曲线(0.42, 0, 0.58, 1.0)
+							step-start：等同于 steps(1, start)
+							step-end：等同于 steps(1, end)
+							steps(<'integer'>[, [ start | end ] ]?)：
+							接受两个参数的步进函数。第一个参数必须为正整数，指定函数的步数。第二个参数取值可以是start或end，指定每一步的值发生变化的时间点。第二个参数是可选的，默认值为end。
+							cubic-bezier(<'number'>, <'number'>, <'number'>, <'number'>)：
+							特定的贝塞尔曲线类型，4个数值需在[0, 1]区间内<a href="demo1.html">实例请看这里</a>
+						</span>
+						</p>
+
+						<p class="paragraph"><em class="bold">动画animation</em>
+								这才是真正的动画。之前的transform 只是数学课上的简单的图形变换而已
+								今天我们带大家看看什么才是真正的动画。（当然有个库叫animation）
+								上面那两 哥老是搞基的，我这里直接给出了所需的各种属性值。
+								首先当然还是你需要弄得动画的名字得有吧，<em class="attribute">animation-name</em> ;当然名字不能乱起的 需要符合规范的对吧。大伙规定了用<em class="attribute">@keyframes</em>定义动画的名字这是必须的。光有名字还不行啊；看不到动画内容大伙也会懵*对吧。动画内容也是在<em class="attribute">@keyframes</em>里面定义 ,可以使用form to 表示动画。也可以用百分比表示。好奇的小伙伴就问了，那动画的内容是什么？当然还是需要用到我们数学课上学的东西啦transform(变换)定义每个时刻的样子，好了动画有了。那我们可以开车了吧？ 首先还是我们开车的时间 <em class="attribute">animation-duration</em> 和速度<em class="attribute">animation-timming-function</em>; 当然还少不了五毛特效<em class="attribute">animation-delay</em>。当然我们这是动画对吧。不能一下就结束了。我们还可以设置循环的属性<em class="attribute">animation-iteration-count</em>。当然啦我们也不能一路向西吧 <em class="attribute">aimate-direation</em>告诉你你要往哪边走。当然我们开车不可能一直开吧。很累的你懂你的。所以需要休息这里就是<em class="attribute">animation-play-state</em>，设定运动的状态。最后开到目的地乐。准备在哪停车是关键：<em class="attribute">animation-fill-mode</em>,简单说是把车停哪，是开回家还是丢在路边，你自己决定吧，好了<em class="blod">animation</em>就到这。
+							
+							<span>animation-duration: 同 transition-duration</span>
+							<span>animation-timming-function:	同transition-timming-function
+							<span>animation-delay  同transition-delay</span>
+							<span>animation-iteration-count:
+								infinite：无限循环
+								<'number'>指定对象动画的具体循环次数</span>
+
+							<span>animation-direaction:
+								normal： 正常方向
+								reverse：反方向运行
+								alternate：动画先正常运行再反方向运行，并持续交替运行
+								alternate-reverse：动画先反运行再正方向运行，并持续交替运行</span>
+
+							<span>animation-play-state 
+							running： 运动
+							paused：暂停</span>
+
+							<span>animation-fill-mode：
+							none：默认值。不设置对象动画之外的状态
+							forwards：设置对象状态为动画结束时的状态
+							backwards：设置对象状态为动画开始时的状态
+							both设置对象状态为动画结束或开始的状态<a href="demo2.html">实例请看这里</a></span>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="rightArea">
+				<div class="right_nav">
+					<div class="search">
+						<input type="text" class="search_input">
+					</div>
+					<div class="recent">
+						<h2 class="recent_h2">recent</h2>
+						<ul class="recent_blog">
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+							<li><a href="#">CSS3技巧1</a></li>		
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</body>
+</html>

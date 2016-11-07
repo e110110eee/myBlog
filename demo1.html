@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CSS3demo</title>
+	<style>
+		div{
+			margin: 20px auto;
+			width:200px;
+			height: 150px;
+			background-color: green;
+			text-align: center;
+			font-size: 20px;
+			line-height: 150px;
+			transition:transform .5s ease-in-out;
+		}
+
+		div:nth-child(even){
+			background-color: #ccc;
+		}
+
+		div:nth-child(1):hover{
+			transform: translate(10px,10px);
+
+		}
+
+		div:nth-child(2){
+			transform-origin:0 0;
+		}
+		div:nth-child(2):hover{
+			transform: rotate(45deg);
+		}
+		div:nth-child(3):hover{
+			transform:scale(1.2);
+		}
+		div:nth-child(4):hover{
+			transform: skew(25deg,25deg);
+		}
+		div:nth-child(5):hover{
+			-moz-transform:matrix(0,0.5,0.5,0,50px,50px);
+		  /*矩阵*/  /*|ace| *[x,y,1]  得到就是你想要得
+			 		  |bdf|
+			 		  |001|*/
+		}
+		a input{
+			display: block;
+			margin: 0 auto;
+		}
+		
+
+	</style>	
+</head>
+<body>
+	<div class="try1">平移效果</div>
+	<div class="try2">旋转效果</div>
+	<div class="try3">缩放效果</div>
+	<div class="try4">扭曲效果</div>
+	<div class="try5">矩阵效果</div>
+	<a href="blog.html"><input type="button" value="返回"></a>
+</body>
+</html>

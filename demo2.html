@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>animate</title>
+	<style>
+		.text{
+			background-color:red;
+			margin:10px auto;
+			border-radius: 50%;
+			width:100px;
+			height: 100px;
+			opacity:0;
+			animation:dige 10s ease-out .5s infinite ;
+			/*尽量不要同时控制两个动画，需要考虑延迟效果anmation-delay*/
+		}
+		@keyframes dige{
+			0%{-moz-transform:scale(0);opacity:0;}
+			20%{-moz-transform:scale(1);opacity:1;}
+			25%{-moz-transform:scale(1);opacity:1;}
+			50%{-moz-transform:scale(0);opacity:0;}
+			70%{-moz-transform:translate(100px,0);scale(1);opacity:1;}
+			80%{-moz-transform:translate(100px,100px);}
+			90%{-moz-transform:translate(0px,100px)}
+			100%{-moz-transform:translate(0px,0px);opacity:0;}
+		}
+		.text2{
+			margin: 0 auto;
+			margin-top: 150px;
+			width: 500px;
+			text-align: left;
+
+		}
+	</style>
+</head>
+<body>
+	<div class="text"></div>
+
+	<div class="text2">源代码：
+		<p>
+			.text{<br/>
+				background-color:red;<br/>
+				margin:10px auto;<br/>
+				border-radius: 50%;<br/>
+				width:100px;<br/>
+				height: 100px;<br/>
+				opacity:0;<br/>
+				animation:dige 10s ease-out  .5s;<br/>
+				/*尽量不要同时控制两个动画，需要考虑延迟效果anmation-delay*/
+			}
+		</p>
+		<p>@keyframes dige{<br/>
+			0%{transform:scale(0);opacity:0;}<br/>
+			20%{transform:scale(1);opacity:1;}<br/>
+			25%{transform:scale(1);opacity:1;}<br/>
+			50%{transform:scale(0);opacity:0;}<br/>
+			70%{transform:translate(100px,0);scale(1);opacity:1;}<br/>
+			80%{transform:translate(100px,100px);}<br/>
+			90%{transform:translate(0px,100px)}<br/>
+			100%{transform:translate(0px,0px);opacity:0;}	<br/>
+		}</p>
+		<a href="blog.html"><input type="button" value="返回"></a>
+	</div>
+</body>
+</html>
