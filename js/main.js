@@ -1,7 +1,6 @@
 $(function (){
 	//距离页面顶部的距离
 
-
 	moveBar()
 	navBar()
 
