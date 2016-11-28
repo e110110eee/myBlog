@@ -24,7 +24,7 @@ function navBar(){
 		}
 
 		
-	},300)
+	},100)
 }
 
 function moveBar(){
