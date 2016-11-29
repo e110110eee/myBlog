@@ -33,154 +33,96 @@
 					<span class="author"> by <em>Dge</em> in <em>SCUT</em> | nov 13, <em>2016</em> | </span>
 
 					<div class="introduce_content">
-						<p class="paragraph">时间总是过得很快。这一周又过去，本周的主要的目的是回顾JS的DOM操作和JS的特性。所以主要是两个方面。闭包、DOM。最后是canvas画图的部分。感觉canvas动画和CSS操作节点有类似的地方，也有自己的特点。
-						</p>
-						<p class="paragraph">
-						<h3>一、闭包：</h3></p>
-						<span>function makeAdder(a) {</span>
-						    <span>&nbsp;&nbsp;return function(b) {</span>
-						        <span>&nbsp;&nbsp;&nbsp;&nbsp;return a + b;</span>
-						    <span>&nbsp;&nbsp;}</span>
-						<span>}</span>
-							<span>var x = makeAdder(5);</span>
-							<span>var y = makeAdder(20);</span>
-							<span>x(6); // ?</span>
-							<span>y(7); // ?</span>
-						<span>这里例子看起来就有点懵逼了吧？我也是这样觉得的。但是要理解了<a href="#" class="bold">作用域链</a>就好理解很多。我们先来看一下另一个例子：</span>
-						<span>function betterExampleNeeded() {</span>
-						    <span>var a = 1;</span>
-						    <span>&nbsp;&nbsp;function oneMoreThanA() {</span>
-						        <span>&nbsp;&nbsp;&nbsp;&nbsp;return a + 1;</span>
-						    <span>&nbsp;&nbsp;}</span>
-						    <span>return oneMoreThanA();</span>
-						<span>}</span>
-						这是一个内部函数的例子。也就是函数里面嵌套函数。他们也有相同的地方。就是他们都有内层函数。可以调用外层的局部变量。
-						最重要的不同点就是内部函数的外层的函数return了。但是闭包只有内层函数return.。函数返回就要使局部变量不存在了，也就是闭包传进来的参数a。但是这样内层函数就不能发挥作用了。局部变量a还是存在的。所以在之前的例子这里a有两个不同的副本，（我很喜欢这个词，表示不是他和她一样的东西）然后输出的就是5+6=11 &nbsp;&nbsp;&nbsp;&nbsp;	10+6=16;
-						
-
-						</p>
-						<p class="paragraph">
-							当JS执行一个函数的时候，就好像我要在一个地方建房子，首先你要有一块地来建房子吧。这里就是函数的<a href="#" class="bold">作用域</a>。房子自己有一个属性a,可以用来住人，这个属性就代表一个<a href="#" class="bold">参数</a>传递进函数。然后makeAdder 返回一个新的函数。（在房子里面再建一个床睡觉）。这时候JS的<a href="#" class="bold">垃圾回收器</a>要回收makeAdder创建函数的作用域，也就是房地产商想过来拆房子。<a href="#" class="bolder">但是返回的内层的函数保留一个指向makeAdder的作用域对象的引用。（在别的地方叫做指针）</a>。结果就不会被垃圾回收器回收。直到指向makeAdder作用域对象调用结束。这个床又是有机关的。房地产也搞不定。只有这个床自己坏了，才能把房子拆了。。。这里的内层函数指向外层作用域对象就是一个<a href="" class="bold">作用域链</a>，内层函数还可以继续return….. 闭包允许你保存状态——所以它们通常可以代替对象来使用（当你不想再单独创建变量重复操作的时候）
-							当然闭包有好的和不好的地方。内存泄漏是最常见的现象。当浏览器不清楚函数的周期的时候就会有毛病。就好像这栋楼不拆会影响整个一片地区的房子完成进度。IE浏览器又是比较娇贵的那种。只要一循环引用就炸了。 什么是循环引用：看下面的例子：
-							<span>function leakMemory() {</span>
-							    <span>&nbsp;&nbsp;&nbsp;&nbsp;var el = document.getElementById('el');</span>
-							    <span>&nbsp;&nbsp;&nbsp;&nbsp;var o = { 'el': el };</span>
-							    <span>&nbsp;&nbsp;&nbsp;&nbsp;el.o = o;</span>
-							<span>}</span>
-							在 IE 中，每当在一个 JavaScript 对象和一个本地对象之间形成循环引用时，就会发生内存泄露。
-							循环引用是很常见的。但是我们最好回避他：
-							<span>1）	最简单方法就是不要使用el:</span>
-							<span>function addHandler(){</span>
-							<span>&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById(‘el’).onclick = function(){</span>
-								<span>&nbsp;&nbsp;&nbsp;&nbsp;this.style.background = ‘red’</span>
-							<span>&nbsp;&nbsp;&nbsp;&nbsp;}</span>
-							<span>}</span>
-
-							<span>2)使用另一个闭包</span>
-
-							<span>function addHandler() {</span>
-								<span>&nbsp;&nbsp;&nbsp;&nbsp;var clickHandler = function() {</span>
-							     <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.style.backgroundColor = 'red';</span>
-							<span>&nbsp;&nbsp;&nbsp;&nbsp;};</span>
-							    <span>&nbsp;&nbsp;return(function() {</span>
-							        <span>&nbsp;&nbsp;&nbsp;&nbsp;var el = document.getElementById('el');</span>
-							        <span>&nbsp;&nbsp;&nbsp;&nbsp;el.onclick = clickHandler;</span>
-							    <span>&nbsp;&nbsp;})();</span>
-							<span>}</span>
-						</p>
-						<p class="paragraph">
-							从新阅读了闭包发现我有个地方理解有一小小问题。就是内部的函数创造由两部分组成的。一个是函数，以及创造该函数的作用域（上一级函数）的局部变量作为他的环境。也就是他可以得到的参数。还是之前的例子，我们是在madeAdder（a）函数得到了局部变量a，也就是建造房子自带的属性。自带的可以避风的属性（a），给我们一个环境去铺一张床睡觉！
-							<span>参考: <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures" class="bold" target="block">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures</a></span>
-						</p>
-						<div class="hr_15"></div>
-						<h3>二、DOM----节点的控制：</h3>
-						<p class="paragraph">
-							这一部分是比较基础的内容，但是坑也不少了。
+						<p class="paragraph">时间总是过得很快。这一周又过去，这个星期前半部分主要学习了JS一个非常常用的知识点----事件的委托。在啊哈磊老师博客网站上学习的算法，这个算法真的说的很生动形象。推荐算法还不算很懂的同学可以去看看。后半部分学习了：JS的很多更底层的东西，了解很多ES6的新的特性。复习了正则表达式的一些基本语法、了解了IE的haslayout和BFC（这里不是KFC哈）非常实用。今天分享的是事件相关的知识。
 						</p>
 						
-						<p class="paragraph">
-							关于DOM操作遇到的坑总结一下：
-							<span>1.	空节点:在遍历子节点时候要注意；</span>
-							<span>2.tr的上一级并不是table上一级的上一级才是。上一级是tbody</span>
-							<span>3.	注意哪些取DOM的返回的是数组，getElementsByClassName()、getElementsByTagName()、childNodes。</span>
-							<span>4.	给需要的DOM添加事件的时候，注意不能直接在for循环里面添加。只会触发最后一次循环的事件的结果。处理方法可以用(1)立即调用函数 。(2)在for循环里面只放一个带参数的函数。函数单独写在外面。</span>
+
+						<h3>事件</h3>
+						<p>	说到javascript就免不了说到事件，基本上和用户的交互都离不开事件。不管是用户移动鼠标还是打字，还是拖动滚动条，都可以触发一些事件。而浏览器的事件流是一个非常重要的概念。不去讨论那些古老的浏览器有事件捕获与事件冒泡的争议，只需要知道在DOM2中规定的事件流包括了三个部分<em class="bold">事件捕获阶段、处于目标阶段、事件冒泡阶段</em></p>
+						
+						<h3>一、事件捕获</h3>
+						<p>定义很简单，事件捕获，是从document元素开始，越高级的父级元素越早接收到事件，但是子节点也会继承父节点的事件。因此这是一个从上而下的过程。但是这里就有个问题，如果我们要捕获<em class="bold">新加入的元素</em>的事件是捕获不到的。
+						<span>看这个例子：</span>
+						&lt;ul class="containe r">
+						    <!-- 先循环给原有的4个li绑定click事件 -->
+						    <span>&lt;li class="item"></ li></span>
+						    <span>&lt;li class="item"></ li></span>
+						    <span>&lt;li class="item"></ li></span>
+						    <span>&lt;li class="item"></ li></span>
+						    
+						    &lt;!-- 这是新添加的li元素，但是该元素没绑定click事件 -->
+						   <span> &lt;li class="item new"></ li></span>
+						 &lt;/ul>
 
 						</p>
-						<div class="hr_15"></div>
-						<h3>三、Canvas：创造一个奇迹</h3>
-						<p class="paragraph">
-							canvas 这个是H5的重头戏，当然我们也不可能一下就全部掌握它。但是这确实可以和JS实现一些比较厉害的东西。我们接下来来看看吧
+						<p>
+							像这样类似的事情，如果我们要得到每个ul的li里的文本的值。第一种方法，在我还不清楚事件委托的时候，我是先拿到所有的li的数组。然后得到他们的innerHTML。但是这样有一个不好地方，就是如果有1000个li我们就要拿拿1000个li节点。明显这样性能是不够好的。这时候事件委托解决了我们这个问题。
 						</p>
-						<p class="paragraph">
-							在编程遇到不懂得名词的时候，第一步我就先去找翻译。canvas 百度翻译出来的就是画布，帆布的意思，也就是我们要在上面画图咯。先别着急，文档上写了画图需要一个上下文环境；而且我们还没有确定画布大小怎么画？
+						<p>在事件捕获的过程中我们可能会遇到这样的问题。已经知道子节点会继承父节点的事件。有时候我们又不想让子节点触发事件。我的第一反应是：子节点不都是在父节点里面的吗？但是一些情况下子节点和父节点的定位是分离。像这样
+						<img src="images/1117.png" alt="demo" id="demo1117">
+						
+						虽然我这个夸张了一点，但是我如果绑定了以下事件就GG了
+						<span>window.onload = function(){</span>
+									<span>var aDiv = document.getElementsByTagName("div")[0]</span>
+									<span>aDiv.onclick = function(){</span>
+										<span>alert("你点了DIV标签？")</span>
+									<span>}</span>
+								<span>}</span>
+						当我们点击span的时候也会发生click事件，这可能不是我们想要得。这里有一种CSS方法让子元素不触发事件
+						<span>span{</span>
+						<span>	pointer-events: none;</span>
+						<span>}</span>
+						当然这也是针对了点击的事件。
+	
 						</p>
-						<p class="paragraph">
-							<span>var canvas = document.getElementById(‘canvas’);//先拿到DOM</span>
-							<span>canvas.width = xxx</span>
-							<span>canvas.height = xxx </span>
-							<span>注意:canvas的数字是不带单位的，所以默认是像素单位（符合大众口味）</span>
+						<h3>二、事件委托</h3>
+						<p>
+							<span>之前说到事件委托可以解决之前提出的问题，那么如何解决呢?</span>
+							<span>很简单就拿上面的例子来说。</span>
+							<span>//我们先拿到ul</span>
+							<span>var aUl = document.getElementByClassName(“container”)[0];</span>
 
-							<span>然后获取我们的上下文环境：</span>
-							<span>var context = canvas.getContext(‘2d’);</span>
+							<span>//然后我们绑定事件委托</span>
+							<span>a Ul.onclick = function(event){</span>
+								<span>var target = event.target;</span>
+								<span>if(target.className===item){  //class是保留字我们要使用className表示类名</span>
+								<span>//触发你要的function</span>
+							<span>}</span>
+							<span>}</span>
 
-							<span>好了接下来我们就可以画图了。在画图之前我要说三点：</span>
-							<span class="bold">canvas 是基于状态来绘图的！</span>
-							<span class="bold">canvas 是基于状态来绘图的！</span>
-							<span class="bold">canvas 是基于状态来绘图的！</span>
-							<span>这是真的，这不是梦。  也就是说不是按画的一个一个对象去控制的。而是按照你的状态进行绘图。简单说就是你画到哪里，就到哪里绘制。感觉就像艺术家有点浪啊。</span>
-							<span>什么叫基于状态绘图?</span>
-							<span>我们先来学习一些基础知识再来讨论这个问题。
-							首先我们有canvas了是不是我们需要一只称手的笔来作画了？我们知道画图其实就是在画两个东西：线条和区域。当然区域是线条组成的。我们先来看看线条吧：有几个要掌握的属性
-
-							<span>context.moveTo(x,y)  路径的开始点</span>
-							<span>context.lineTo(x,y)	   路径的结束点</span>
-
-							<span>这里出现了路径：就是我们要画的一个路线图，还没有开始绘制 。当然我们绘制之前还要设计一些样式吧（就好像CSS对HTML一样）</span>
-							<span>context.strokeStyle= “”;</span>
-							<span>context.stroke()   把路径 绘制成线</span>
-							看下面一个例子：
-							<img src="images/1.png" alt="" class="ex_img">
-							<span>这三条线的颜色是红、绿、蓝吗？ 答案当然不是；
-							三条线颜色是一样的。这就是基于状态的绘图。 并不是把线条看成对象。绘制完一个到一个。但是我们难道就不能把他们仨的颜色弄成不同的吗? 万能的人类当然给我们设置其他方法，还记得我之前说了一个词吗路径 Path ,这在canvas里是非常常见的。就是把不同的绘制的对象用beginPath() closePath()包裹起来，就能组成了不同的绘制的路径。</span>
-						</p>
-						<p class="paragraph">
-							好的线段我们讲完了，接下来我们说一说区域的的填充。当我们路径围成区域之后
-							<span>context.fillStyle() 设置填充的样式；</span>
-							<span>context.fill()  进行填充和stroke()异曲同工之妙。</span> 
-							<span class="bold demo_click">下面演示一個小demo吧</span>
-						</p>
-						<p class="paragraph">
-							社会在不断进步，如果每一条线都是这样画岂不是被累死了？当然大哥发明了几个很方便的API
-							<span>cxt.rect(x,y,width,height )  规划路径；</span>
-							 
-							<span>cxt.fillRect(x,y,width,height) 规划路径填充颜色 </span>
-							<span>cxt.strokeRect(x,y,width,height) 规划路径然后描绘线</span>
+							在jquery中已经封装了一个On函数。可以让我们更方便的去实现这些东西
+							<span>$('ul.container').on('click', 'li.item', function(event) {</span>
+							    <span>// dosomething</span>
+							<span>})</span>
+							<span>// on中的第二参数就是我们的目标元素的选择器</span>
+							
 
 						</p>
-						<p class="paragraph">
-							之前画的是直线，现在我们来介绍四个画曲线API。
-							<span>context.arc(x0,y0,R,startAngle,endAngle, anticlockwise=false(顺时针 default))  </span>
-							<span>context.arcTo(x1,y1,x2,y2,radius);</span><span>需要提前给一个控制点x0,y0</span>
+						<h3>三、事件冒泡</h3>
 
-							<img src="images/2.png" alt="">
-							<span>图像开始画一定是在X0，Y0，但是结束点不一定是 X2，Y2</span>
-							<span>context. bezierCurveTo(x1,y1,x2,y2,x3,y3) 二次/三次贝赛尔曲线  </span>
-							<span>可以试试这个<a href="http://www.j--d.com/bezier" class="bold" target="block">http://www.j--d.combezier</a>//画曲线基本靠他了</span>
+						<p>说完了事件捕获，然后来说说事件冒泡这个坑。所谓事件冒泡，就是让DOM树最底层的目标元素最先接收到事件，然后往上传递，这是一个自下而上的过程。</p>
+						<p>注意：刚才我说了，子元素继承了父元素的事件可以搞事情，那么再事件冒泡的阶段当然也会出现类似的情况。当父级和子元素都绑定了相同的事件类型，但是执行不同的操作，那么当我们触发了子元素的事件。父元素的事件也会跟着触发了。<a href="冒泡带来的危害.html" class="bold">看这个例子。</a></p>
+						<p>点击黄色区域的时候，两个事件都会触发。这就不是我们想要得结果。所以我们要阻止事件冒泡。</p>
+						<span>aUi.onclick = function(event){</span>
+							<span>event.stopPropagation()//标准</span>
+							
+							<span>//ie</span>
+							<span>e.candleBubble</span>
+						<span>}
+						<h3>浏览器默认事件</h3>
+						<p>
+							看完事件有那么多坑，我就想到了浏览器的默认的行为也是喜欢搞事情的。就去查了关于浏览器默认行为的事情。看到说firefox浏览器比较诡异。虽然我使用的也是firefox，浏览器的默认的行为和其他浏览器不太一样。看下面的例子
+							<img src="images/1117demo2.png" alt="demo2" class="demo21117">
+							按照程序运行，当按下一个键时候，会粗暴的alert你按的按键的键码。但是不会再输入框里面显示你按的字母。但是在firefox这样阻止默认事件却是行不通的。依然会有字母打出来。但是在其他的浏览器却异常的好使。
 						</p>
-						<p class="paragraph">
-							基本上绘图所用的API都在这里了，还有很多关于fillStyle 和 strokeStyle的介绍，在具体绘制时候可以具体使用。一些图形变换的API和CSS3的类似。不过CSS3的表现力更加丰富一些。关于文字的绘制也比较简单这里不再赘述了，说一些比较常用的API。
+						<p>查找了一下阻止FF浏览器的默认行为，最多的还是使用e.stopPropagation() 阻止冒泡来解决。但是在这个例子里面却不能使用e.stopPropagation（）来阻止默认事件。经过百般调试，查阅了火狐自己的MDN的官方的文档的例子有一个类似的。是这样：</p>
+							<img src="images/1117demo3.png" alt="demo3" class="demo31117">
+						<span>在火狐浏览器却能正常执行这个功能。这里和我们的例子有两个不同的地方：</span>
+						<span>1、	这里使用的是keypress事件，并不是keydown事件。</span>
+						<span>2、	这里用的是event.charCode 而我们例子是event。keyCode。关于两者的区别这里有一篇文章说的挺好的。<a href="http://blog.sina.com.cn/s/blog_65c2ec5e0101blj6.html" class="bold">http://blog.sina.com.cn/s/blog_65c2ec5e0101blj6.html</a></span>
 
-							<span>1.save() /restore()</span> 
-							 大家之前有看到路径可以包裹起来的对吧。当然我们的状态也可以包裹的。这里我没有提及到动画相关内容。如果不把状态包裹起来，我们设置动画是对整个canvas操作的。该动的没动，不该动的动了。restore() 目的就是返回到我们开始改变状态save()之前。这确实很好用的属性；
-							<span>2.clip()</span>
-							context.clip() 把刚才绘制的路径设置为当前的绘制的环境。也就是画布的区域；
-							这里放一个简单的<a href="MyCard.html" class="bold" target="block">demo</a>感受一下clip的效果。
+						<span>把我们的例子keydown事件换成keypress事件就可以了，在其他浏览器也可以正常运行。但是两个编码是不同的。这是一个小坑，下次千万别踩了。</span>
 
-						</p>
-						<p>	
-							总结：canvas是一个非常大的话题。还有很多东西都没有兼容所有浏览器。但是不久将来我们将会看到很多炫酷网页都是H5和CSS3制作的。加油吧！
-
-						</p>
 					</div>
 					<div class="hr_30"></div>
 				</div>

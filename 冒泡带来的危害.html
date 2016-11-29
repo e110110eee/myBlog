@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>冒泡带来的危害</title>
+	<style>
+		.container{
+			width: 200px;
+			height: 200px;
+			background-color: red;
+
+		}
+		.button{
+			width: 100px;
+			height: 100px;
+			background-color: #FFCC11;
+		}
+	</style>
+	<script>
+		window.onload = function(){
+
+			var container = document.getElementsByClassName('container')[0];
+			container.onclick = function(){
+				alert('你点了外层的？');
+			}
+			var btn = document.getElementsByClassName('button')[0];
+			btn.onclick = function(e){
+				alert('你干了什么？');
+			}
+
+
+		}
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="button">clickME
+		</div>
+	</div>
+</body>
+</html>
